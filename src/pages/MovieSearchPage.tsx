@@ -5,6 +5,7 @@ import { searchByTitle } from "../api/movieSearchApi";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { SearchBar } from "../components/SearchBar/SearchBar";
 import { MoviesList } from "../components/MoviesList/MoviesList";
+import { Header } from "../components/Header/Header";
 
 function MovieSearchPage() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -28,26 +29,32 @@ function MovieSearchPage() {
     }, [debouncedSearchTerm]);
 
     return (
-        <Container maxWidth="md" sx={{marginTop: 4}}>
-            <Typography variant="h3" component="h1" gutterBottom>
-                Movie Search
-            </Typography>
-
-            <SearchBar
-                value={searchTerm}
-                onChange={setSearchTerm}
-                isLoading={isLoading}
-            />
-
-            {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
-                    <CircularProgress/>
+        <Box sx={{ backgroundColor: '#f0f0f0', minHeight: '100vh', minWidth: '100vh' }}>
+            <Header />
+            <Container maxWidth="lg" sx={{ pt: 4, pb: 4 }}>
+                <Typography variant="h4" component="h2" sx={{ mb: 3, fontWeight: 'medium', color: '#333' }}>
+                    Search
+                </Typography>
+                
+                <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+                <SearchBar 
+                    value={searchTerm} 
+                    onChange={setSearchTerm} 
+                    isLoading={isLoading} 
+                    sx={{ maxWidth: 600 }}
+                />
                 </Box>
-            ) : (
-                <MoviesList movies={movies}/>
-            )}
-        </Container>
-    )
+                
+                {isLoading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 4 }}>
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <MoviesList movies={movies} />
+                )}
+            </Container>
+        </Box>
+    );
 }
 
 export default MovieSearchPage;
