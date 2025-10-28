@@ -7,7 +7,12 @@ interface MovieCardProps {
 
 export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     return (
-        <Card sx={{ height: '100%' }}>
+        <Card 
+            sx={{ 
+                width: 250,
+                height: '100%',
+            }}
+        >
             <CardMedia
                 component="img"
                 height="350"
@@ -15,7 +20,15 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
                 alt={movie.Title}
             />
             <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
+                <Typography 
+                    gutterBottom
+                    variant="h6" 
+                    component="div"
+                    sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
                     {movie.Title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
