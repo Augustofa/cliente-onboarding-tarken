@@ -2,7 +2,7 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getDefaultLibrary } from "../api/movieLibraryApi";
 import { Header } from "../components/Header/Header";
-import { MoviesList } from "../components/MoviesList/MoviesList";
+import { LibraryList } from "../components/MoviesList/LibraryList";
 import type { MovieDto } from "../types/movie.types";
 
 function MovieLibraryPage() {
@@ -20,6 +20,12 @@ function MovieLibraryPage() {
         updateLibrary();
     }, []);
 
+    const handleMovieRemoved = (idToRemove: string) => {
+        setMovies(currentMovies => 
+            currentMovies.filter(movie => movie.imdbID !== idToRemove)
+        );
+    };
+    
     return (
         <Box sx={{ backgroundColor: '#f0f0f0', minHeight: '100vh', minWidth: '100vh' }}>
             <Header />
@@ -33,7 +39,7 @@ function MovieLibraryPage() {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <MoviesList movies={movies} />
+                    <LibraryList movies={movies} onMovieRemoved={handleMovieRemoved} />
                 )}
             </Container>
         </Box>

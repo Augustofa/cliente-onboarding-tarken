@@ -1,16 +1,14 @@
-import { Box, Button, Card, CardContent, CardMedia, Typography } from "@mui/material";
-import type { MovieDto } from "../../types/movie.types";
 import { Star } from "@mui/icons-material";
+import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import type { MovieDto } from "../../types/movie.types";
 
 interface MovieCardProps {
     movie: MovieDto;
+    actions: React.ReactNode;
 }
 
-export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions }) => {
     const rating = '8.2';
-    const handleAddToLibrary = () => {
-        console.log(`Adding ${movie.Title} to Library`);
-    }
 
     return (
         <Card 
@@ -82,16 +80,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
                         <Typography variant="body2">{rating}</Typography>
                     </Box>
                 </Box>
-                <Button
-                    variant="contained" 
-                    color="success"
-                    fullWidth 
-                    onClick={handleAddToLibrary}
-                    sx={{ textTransform: 'none', backgroundColor: '#34d399', '&:hover': { backgroundColor: '#10b981' } }}
-                >
-                    Add to My Library
-                </Button>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {actions}
+                </Box>
             </CardContent>
         </Card>
-    )
+    );
 }

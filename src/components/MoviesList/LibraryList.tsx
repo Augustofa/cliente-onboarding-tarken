@@ -1,21 +1,22 @@
 import { Grid, Typography } from "@mui/material";
 import type { MovieDto } from "../../types/movie.types";
-import { SearchCard } from "./SearchCard";
+import { ReviewCard } from "./ReviewCard";
 
-interface ResultsListProps {
+interface LibraryListProps {
     movies: MovieDto[];
+    onMovieRemoved: (id: string) => void;
 }
 
-export const MoviesList: React.FC<ResultsListProps> = ({ movies }) => {
+export const LibraryList: React.FC<LibraryListProps> = ({ movies, onMovieRemoved }) => {
     if(movies.length === 0) {
-        return <Typography color="textPrimary">No results found.</Typography>
+        return <Typography color="textPrimary">Library is empty.</Typography>
     }
 
     return (
         <Grid container spacing={3}>
         {movies.map((movie) => (
             <Grid key={movie.imdbID} sx={{display: "flex"}}>
-                <SearchCard movie={movie}/>
+                <ReviewCard movie={movie} onMovieRemoved={onMovieRemoved}/>
             </Grid>
         ))}
         </Grid>
