@@ -1,13 +1,13 @@
 import { Box, Button, Card, CardContent, CardMedia, Typography } from "@mui/material";
-import type { MovieSearchResult } from "../../types/movie.types";
+import type { MovieDto } from "../../types/movie.types";
 import { Star } from "@mui/icons-material";
 
 interface MovieCardProps {
-    movie: MovieSearchResult;
+    movie: MovieDto;
 }
 
 export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-    const rating = '8.0';
+    const rating = '8.2';
     const handleAddToLibrary = () => {
         console.log(`Adding ${movie.Title} to Library`);
     }

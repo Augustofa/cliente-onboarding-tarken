@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { MovieSearchResult } from "../types/movie.types";
+import type { MovieDto } from "../types/movie.types";
 import { useDebounce } from "../hooks/useDebounce";
 import { searchByTitle } from "../api/movieSearchApi";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
@@ -9,7 +9,7 @@ import { Header } from "../components/Header/Header";
 
 function MovieSearchPage() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [movies, setMovies] = useState<MovieSearchResult[]>([]);
+    const [movies, setMovies] = useState<MovieDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 

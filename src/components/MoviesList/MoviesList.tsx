@@ -1,9 +1,9 @@
 import { Grid, Typography } from "@mui/material";
-import type { MovieSearchResult } from "../../types/movie.types";
+import type { MovieDto } from "../../types/movie.types";
 import { MovieCard } from "./MovieCard";
 
 interface ResultsListProps {
-    movies: MovieSearchResult[];
+    movies: MovieDto[];
 }
 
 export const MoviesList: React.FC<ResultsListProps> = ({ movies }) => {
