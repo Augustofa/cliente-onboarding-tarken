@@ -6,5 +6,6 @@ export interface MovieDto {
   imdbID: string;
   Type: string;
   Poster: string;
+  Rating: number;
   reviews?: ReviewDto[];
 }

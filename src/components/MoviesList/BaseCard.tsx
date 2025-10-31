@@ -10,8 +10,6 @@ interface MovieCardProps {
 }
 
 export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions, playReview, isPlaying }) => {
-    const rating = '8.2';
-
     return (
         <Card 
             sx={{ 
@@ -130,7 +128,7 @@ export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions, playReview,
                         }}
                     >
                         <Star sx={{ color: 'orange', fontSize: '1.2rem', mr: 0.5 }} />
-                        <Typography variant="body2">{rating}</Typography>
+                        <Typography variant="body2">{movie.Rating}</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
