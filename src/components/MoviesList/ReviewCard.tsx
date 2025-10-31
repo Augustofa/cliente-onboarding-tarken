@@ -1,5 +1,5 @@
 import { Alert, Button, Snackbar } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getDefaultLibrary, removeMovieFromLibrary } from "../../api/movieLibraryApi";
 import { createReview, deleteReview, getReviewAudio } from "../../api/movieReviewApi";
 import type { MovieDto } from "../../types/movie.types";
@@ -12,14 +12,42 @@ interface MovieCardProps {
     onLibraryUpdate: () => void;
 }
 
-export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, onLibraryUpdate: onLibraryUpdate }) => {
+export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, onLibraryUpdate }) => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [hasReview, setHasReview] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         setHasReview(movie.reviews! && movie.reviews.length > 0);
-    })
+        if(audioRef.current) {
+            audioRef.current.src = '';
+            setIsPlaying(false);
+        }
+
+        audioRef.current = new Audio();
+
+        const handleEnded = () => setIsPlaying(false);
+        const handleError = () => {
+            setIsPlaying(false);
+            setMessage('Error playing audio');
+            setSnackbarOpen(true);
+        }
+
+        audioRef.current.addEventListener('ended', handleEnded);
+        audioRef.current.addEventListener('error', handleError);
+
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.removeEventListener('ended', handleEnded);
+                audioRef.current.removeEventListener('error', handleError);
+                audioRef.current.pause();
+                audioRef.current.src = '';
+                audioRef.current = null;
+            }
+        };
+    }, [movie.imdbID]);
 
     const handleRemoveFromLibrary = async () => {
         const response = await removeMovieFromLibrary(movie);
@@ -38,11 +66,27 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
     };
 
     const playReview = async () => {
-        const audioUrl = await getReviewAudio(movie);
-        if(audioUrl) {
-            const audio = new Audio(audioUrl);
-            audio.play();
+        if(audioRef.current) {
+            if(isPlaying) {
+                audioRef.current.pause();
+                setIsPlaying(false);
+            } else {
+                try {
+                    const audioUrl = await getReviewAudio(movie);
+                    if(!audioUrl) return;
+
+                    audioRef.current.src = audioUrl;
+                    await audioRef.current.play();
+                    setIsPlaying(true);
+                } catch (error) {
+                    console.error('Error playing audio:', error);
+                    setMessage('Error playing audio');
+                    setSnackbarOpen(true);
+                }
+            }
         }
+
+        
     };
 
     const closeSnackbar = (_event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -68,6 +112,7 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
         
         setMessage("Review succesufully recorded!");
         setSnackbarOpen(true);
+        onLibraryUpdate();
     };
 
     return (
@@ -112,6 +157,7 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
                 </>
             }
             playReview={hasReview ? playReview : undefined}
+            isPlaying={isPlaying}
         >
         </BaseCard>
         

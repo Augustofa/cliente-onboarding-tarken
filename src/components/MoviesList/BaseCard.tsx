@@ -1,4 +1,4 @@
-import { PlayArrow, Star } from "@mui/icons-material";
+import { Pause, PlayArrow, Star } from "@mui/icons-material";
 import { Box, Card, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import type { MovieDto } from "../../types/movie.types";
 
@@ -6,9 +6,10 @@ interface MovieCardProps {
     movie: MovieDto;
     actions: React.ReactNode;
     playReview?: () => void;
+    isPlaying?: boolean;
 }
 
-export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions, playReview }) => {
+export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions, playReview, isPlaying }) => {
     const rating = '8.2';
 
     return (
@@ -36,22 +37,49 @@ export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions, playReview 
                     sx={{ objectFit: 'cover', height: '100%' }}
                 />
                 {playReview && (
-                    <IconButton
-                        onClick={playReview}
+                    <Box
                         sx={{
                             position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                            color: 'white',
-                            '&:hover': {
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            },
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: isPlaying ? 'rgba(0, 0, 0, 0.3)' : 'transparent',
+                            transition: 'background-color 0.3s ease',
                         }}
                     >
-                        <PlayArrow sx={{ fontSize: '2rem' }} />
-                    </IconButton>
+                        <IconButton
+                            onClick={playReview}
+                            sx={{
+                                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                },
+                                animation: isPlaying ? 'pulse 2s infinite' : 'none',
+                                '@keyframes pulse': {
+                                    '0%': {
+                                        transform: 'scale(1)',
+                                    },
+                                    '50%': {
+                                        transform: 'scale(1.1)',
+                                    },
+                                    '100%': {
+                                        transform: 'scale(1)',
+                                    },
+                                },
+                            }}
+                        >
+                            {isPlaying ? (
+                                <Pause sx={{ fontSize: '2rem' }} />
+                            ) : (
+                                <PlayArrow sx={{ fontSize: '2rem' }} />
+                            )}
+                        </IconButton>
+                    </Box>
                 )}
             </Box>
             <CardContent sx={{ 
