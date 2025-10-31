@@ -12,8 +12,8 @@ function MovieLibraryPage() {
     useEffect(() => {
         const updateLibrary = async () => {
             setIsLoading(true);
-            const results = await getDefaultLibrary();
-            setMovies(results?.movies!);
+            const library = await getDefaultLibrary();
+            setMovies(library?.movies!);
             setIsLoading(false);
         }
 

@@ -1,7 +1,7 @@
 import type { MovieDto } from "./movie.types";
 
 export interface LibraryDto {
-  id: 2;
+  id: number;
   name: string;
   movies: MovieDto[];
 }
