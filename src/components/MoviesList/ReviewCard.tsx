@@ -52,9 +52,8 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
     const handleRemoveFromLibrary = async () => {
         const response = await removeMovieFromLibrary(movie);
         setMessage(response.toString());
-        onMovieRemoved(movie.imdbID);
         setSnackbarOpen(true);
-        onLibraryUpdate();
+        onMovieRemoved(movie.imdbID);
     }
 
     const handleDeleteReview = async () => {
