@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { getDefaultLibrary, removeMovieFromLibrary } from "../../api/movieLibraryApi";
 import { createReview, deleteReview, getReviewAudio } from "../../api/movieReviewApi";
 import type { MovieDto } from "../../types/movie.types";
-import { AudioRecorder } from "./AudioRecorder";
+import { AudioRecorder } from "../AudioRecorder/AudioRecorder";
 import { BaseCard } from "./BaseCard";
 
 interface MovieCardProps {

@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 import type { MovieDto } from "../../types/movie.types";
-import { ReviewCard } from "./ReviewCard";
+import { ReviewCard } from "../MovieCards/ReviewCard";
 
 interface LibraryListProps {
     movies: MovieDto[];

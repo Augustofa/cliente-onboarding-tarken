@@ -2,7 +2,7 @@ import { Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getDefaultLibrary } from "../../api/movieLibraryApi";
 import type { MovieDto } from "../../types/movie.types";
-import { SearchCard } from "./SearchCard";
+import { SearchCard } from "../MovieCards/SearchCard";
 
 interface ResultsListProps {
     movies: MovieDto[];
