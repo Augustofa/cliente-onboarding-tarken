@@ -1,6 +1,6 @@
 import axios from 'axios';
-import type { ReviewDto } from '../types/review.types';
 import type { MovieDto } from '../types/movie.types';
+import type { ReviewDto } from '../types/review.types';
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}`
 
@@ -70,5 +70,16 @@ export const getReviewAudio = async (movie: MovieDto): Promise<string | null> =>
     } catch (error) {
         console.error("Error fetching audio review", error);
         return null;
+    }
+}
+
+export const deleteReview = async (reviewId: string): Promise<string> => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/movie-review/${reviewId}`);
+        return response.data;
+    } catch (error) {
+        const errorMsg = "Error fetching audio review";
+        console.error(errorMsg, error);
+        return errorMsg;
     }
 }

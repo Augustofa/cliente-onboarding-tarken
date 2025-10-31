@@ -10,15 +10,15 @@ function MovieLibraryPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        const updateLibrary = async () => {
-            setIsLoading(true);
-            const library = await getDefaultLibrary();
-            setMovies(library?.movies!);
-            setIsLoading(false);
-        }
-
         updateLibrary();
     }, []);
+
+    const updateLibrary = async () => {
+        setIsLoading(true);
+        const library = await getDefaultLibrary();
+        setMovies(library?.movies!);
+        setIsLoading(false);
+    }
 
     const handleMovieRemoved = (idToRemove: string) => {
         setMovies(currentMovies => 
@@ -39,7 +39,7 @@ function MovieLibraryPage() {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <LibraryList movies={movies} onMovieRemoved={handleMovieRemoved} />
+                    <LibraryList movies={movies} onMovieRemoved={handleMovieRemoved} onMovieUpdated={updateLibrary} />
                 )}
             </Container>
         </Box>

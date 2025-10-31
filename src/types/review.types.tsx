@@ -1,5 +1,5 @@
 export interface ReviewDto {
-  id?: number;
+  id?: string;
   audioPath: Uint8Array;
   movieId: string;
   libraryId: number;

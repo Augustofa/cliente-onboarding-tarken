@@ -1,7 +1,7 @@
 import { Alert, Button, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getDefaultLibrary, removeMovieFromLibrary } from "../../api/movieLibraryApi";
-import { createReview, getReviewAudio } from "../../api/movieReviewApi";
+import { createReview, deleteReview, getReviewAudio } from "../../api/movieReviewApi";
 import type { MovieDto } from "../../types/movie.types";
 import { AudioRecorder } from "./AudioRecorder";
 import { BaseCard } from "./BaseCard";
@@ -9,19 +9,33 @@ import { BaseCard } from "./BaseCard";
 interface MovieCardProps {
     movie: MovieDto;
     onMovieRemoved: (id: string) => void;
+    onLibraryUpdate: () => void;
 }
 
-export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved }) => {
+export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, onLibraryUpdate: onLibraryUpdate }) => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [message, setMessage] = useState('');
-    const hasReview = movie.reviews! && movie.reviews.length > 0;
+    const [hasReview, setHasReview] = useState(false);
+
+    useEffect(() => {
+        setHasReview(movie.reviews! && movie.reviews.length > 0);
+    })
 
     const handleRemoveFromLibrary = async () => {
         const response = await removeMovieFromLibrary(movie);
         setMessage(response.toString());
         onMovieRemoved(movie.imdbID);
         setSnackbarOpen(true);
+        onLibraryUpdate();
     }
+
+    const handleDeleteReview = async () => {
+        const reviewId = movie.reviews?.[0].id!;
+        const response = await deleteReview(reviewId);
+        setMessage(response);
+        setSnackbarOpen(true);
+        onLibraryUpdate();
+    };
 
     const playReview = async () => {
         const audioUrl = await getReviewAudio(movie);
@@ -70,20 +84,31 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved }) 
                 >
                     Remove from My Library
                 </Button>
-                <AudioRecorder onRecordingComplete={saveRecordedReview}>
-                    {({ isRecording, toggleRecording }) => (
-                        <>
-                        <Button
-                            variant="contained"
-                            fullWidth 
-                            onClick={toggleRecording}
-                            sx={{ textTransform: 'none', backgroundColor: isRecording ? '#b92110ff' : '#3437d3ff', '&:hover': { backgroundColor: isRecording ? '#a0150cff' : '#1016b9ff' } }}
-                        >
-                            {isRecording ? 'Stop Recording' : 'Record Review'}
-                        </Button>
-                        </>
-                    )}
-                </AudioRecorder>
+                {hasReview ? (
+                     <Button
+                        variant="contained"
+                        fullWidth 
+                        onClick={handleDeleteReview}
+                        sx={{ textTransform: 'none', backgroundColor: '#d34434ff', '&:hover': { backgroundColor: '#b92110ff' } }}
+                    >
+                        Delete Review
+                    </Button>
+                ) : (
+                    <AudioRecorder onRecordingComplete={saveRecordedReview}>
+                        {({ isRecording, toggleRecording }) => (
+                            <>
+                            <Button
+                                variant="contained"
+                                fullWidth 
+                                onClick={toggleRecording}
+                                sx={{ textTransform: 'none', backgroundColor: isRecording ? '#b92110ff' : '#3437d3ff', '&:hover': { backgroundColor: isRecording ? '#a0150cff' : '#1016b9ff' } }}
+                            >
+                                {isRecording ? 'Stop Recording' : 'Record Review'}
+                            </Button>
+                            </>
+                        )}
+                    </AudioRecorder>
+                )}
                 </>
             }
             playReview={hasReview ? playReview : undefined}
