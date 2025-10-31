@@ -1,13 +1,14 @@
-import { Star } from "@mui/icons-material";
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { PlayArrow, Star } from "@mui/icons-material";
+import { Box, Card, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import type { MovieDto } from "../../types/movie.types";
 
 interface MovieCardProps {
     movie: MovieDto;
     actions: React.ReactNode;
+    playReview?: () => void;
 }
 
-export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions }) => {
+export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions, playReview }) => {
     const rating = '8.2';
 
     return (
@@ -22,13 +23,37 @@ export const BaseCard: React.FC<MovieCardProps> = ({ movie, actions }) => {
                 overflow: 'hidden',
             }}
         >
-            <CardMedia
-                component="img"
-                height="350"
-                image={movie.Poster !== 'N/A' ? movie.Poster : "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"}
-                alt={movie.Title}
-                sx={{ objectFit: 'cover' }}
-            />
+            <Box sx={{ position: 'relative', width: '100%', height: 350 }}>
+                <CardMedia
+                    component="img"
+                    height="350"
+                    image={
+                        movie.Poster !== 'N/A' 
+                        ? movie.Poster 
+                        : "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg"
+                    }
+                    alt={movie.Title}
+                    sx={{ objectFit: 'cover', height: '100%' }}
+                />
+                {playReview && (
+                    <IconButton
+                        onClick={playReview}
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                            color: 'white',
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            },
+                        }}
+                    >
+                        <PlayArrow sx={{ fontSize: '2rem' }} />
+                    </IconButton>
+                )}
+            </Box>
             <CardContent sx={{ 
                 flexGrow: 1, 
                 display: 'flex', 
