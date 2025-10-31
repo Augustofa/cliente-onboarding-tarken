@@ -6,9 +6,10 @@ import { BaseCard } from "./BaseCard";
 
 interface MovieCardProps {
     movie: MovieDto;
+    isInLibrary: boolean;
 }
 
-export const SearchCard: React.FC<MovieCardProps> = ({ movie }) => {
+export const SearchCard: React.FC<MovieCardProps> = ({ movie, isInLibrary }) => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -30,15 +31,26 @@ export const SearchCard: React.FC<MovieCardProps> = ({ movie }) => {
         <BaseCard
             movie={movie}
             actions={
-                <Button
-                    variant="contained" 
-                    color="success"
-                    fullWidth 
-                    onClick={handleAddToLibrary}
-                    sx={{ textTransform: 'none', backgroundColor: '#34d399', '&:hover': { backgroundColor: '#10b981' } }}
-                >
-                    Add to My Library
-                </Button>
+                isInLibrary ? (
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        disabled
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Already in Library
+                    </Button>
+                ) : (
+                    <Button
+                        variant="contained" 
+                        color="primary"
+                        fullWidth 
+                        onClick={handleAddToLibrary}
+                        sx={{ textTransform: 'none', backgroundColor: '#34d399', '&:hover': { backgroundColor: '#10b981' } }}
+                    >
+                        Add to My Library
+                    </Button>
+                )
             }
         >
         </BaseCard>
