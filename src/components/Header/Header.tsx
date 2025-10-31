@@ -1,10 +1,13 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link } from 'react-router-dom'; 
+import { Link, useLocation } from 'react-router-dom'; 
 
 export const Header: React.FC = () => {
+    const location = useLocation();
+    const currentPath = location.pathname;
+
     return (
-        <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid #e0e0e0' }}>
+        <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid #e0e0e0', minWidth: "100vh" }}>
         <Toolbar>
             <Typography 
                 variant="h5" 
@@ -20,14 +23,20 @@ export const Header: React.FC = () => {
                 <Button 
                     component={Link}
                     to="/" 
-                    sx={{ color: 'text.primary', '&.active': { fontWeight: 'bold' } }}
+                    sx={{
+                        color: currentPath === '/' ? 'primary.main' : 'text.primary',
+                        fontWeight: currentPath === '/' ? 'bold' : 'normal',
+                    }}
                 >
                     Search
                 </Button>
                 <Button 
                     component={Link}
                     to="/my-library" 
-                    sx={{ color: 'text.secondary' }}
+                    sx={{
+                        color: currentPath === '/my-library' ? 'primary.main' : 'text.primary',
+                        fontWeight: currentPath === '/my-library' ? 'bold' : 'normal',
+                    }}
                 >
                     My Library
                 </Button>
