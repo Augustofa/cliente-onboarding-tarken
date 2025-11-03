@@ -1,4 +1,4 @@
-import { Alert, Button, Snackbar } from "@mui/material";
+import { Button } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { getDefaultLibrary, removeMovieFromLibrary } from "../../api/movieLibraryApi";
 import { createReview, deleteReview, getReviewAudio } from "../../api/movieReviewApi";
@@ -8,13 +8,11 @@ import { BaseCard } from "./BaseCard";
 
 interface MovieCardProps {
     movie: MovieDto;
-    onMovieRemoved: (id: string) => void;
+    showMessage: (message: string) => void;
     onLibraryUpdate: () => void;
 }
 
-export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, onLibraryUpdate }) => {
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [message, setMessage] = useState('');
+export const ReviewCard: React.FC<MovieCardProps> = ({ movie, showMessage: showMessage, onLibraryUpdate }) => {
     const [hasReview, setHasReview] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -31,8 +29,7 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
         const handleEnded = () => setIsPlaying(false);
         const handleError = () => {
             setIsPlaying(false);
-            setMessage('Error playing audio');
-            setSnackbarOpen(true);
+            showMessage('Error playing audio');
         }
 
         audioRef.current.addEventListener('ended', handleEnded);
@@ -51,16 +48,14 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
 
     const handleRemoveFromLibrary = async () => {
         const response = await removeMovieFromLibrary(movie);
-        setMessage(response.toString());
-        setSnackbarOpen(true);
-        onMovieRemoved(movie.imdbID);
+        showMessage(response.toString());
+        onLibraryUpdate();
     }
 
     const handleDeleteReview = async () => {
         const reviewId = movie.reviews?.[0].id!;
         const response = await deleteReview(reviewId);
-        setMessage(response);
-        setSnackbarOpen(true);
+        showMessage(response);
         onLibraryUpdate();
     };
 
@@ -79,8 +74,7 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
                     setIsPlaying(true);
                 } catch (error) {
                     console.error('Error playing audio:', error);
-                    setMessage('Error playing audio');
-                    setSnackbarOpen(true);
+                    showMessage('Error playing audio');
                 }
             }
         }
@@ -88,17 +82,9 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
         
     };
 
-    const closeSnackbar = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setSnackbarOpen(false);
-    };
-
     const saveRecordedReview = async (recordedBuffer: Uint8Array | null) => {
         if (!recordedBuffer) {
-            setMessage('No recording available');
-            setSnackbarOpen(true);
+            showMessage('No recording available');
             return;
         }
 
@@ -109,8 +95,7 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
             libraryId: library!.id
         });
         
-        setMessage("Review succesufully recorded!");
-        setSnackbarOpen(true);
+        showMessage("Review succesufully recorded!");
         onLibraryUpdate();
     };
 
@@ -159,22 +144,6 @@ export const ReviewCard: React.FC<MovieCardProps> = ({ movie, onMovieRemoved, on
             isPlaying={isPlaying}
         >
         </BaseCard>
-        
-        <Snackbar
-            open={snackbarOpen}
-            autoHideDuration={3000}
-            onClose={closeSnackbar}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-            <Alert
-                onClose={closeSnackbar}
-                severity="info"
-                variant="filled"
-                sx={{ width: '100%' }}
-            >
-                {message}
-            </Alert>
-        </Snackbar>
         </>
     )
 }

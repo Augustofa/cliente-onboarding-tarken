@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type { MovieDto } from '../types/movie.types';
-import type { ReviewDto } from '../types/review.types';
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}`
 
@@ -21,44 +20,6 @@ export const createReview = async (params: { file: Uint8Array; movieId: string; 
         const errorMessage = `Error saving review`;
         console.error(errorMessage, error);
         return errorMessage;
-    }
-}
-
-export const searchReviewByMovie = async (movieId: string): Promise<ReviewDto[]> => {
-    try{
-        const response = await axios.get<ReviewDto[]>(`${API_BASE_URL}/movie-review/movie/${movieId}`);
-        return response.data
-    } catch(error) {
-        console.error("Error searching movie", error);
-        return [];
-    }
-}
-
-export const searchReviewByLibrary = async (movieId: string): Promise<ReviewDto[]> => {
-    try{
-        const response = await axios.get<ReviewDto[]>(`${API_BASE_URL}/movie-review/movie/${movieId}`);
-        return response.data
-    } catch(error) {
-        console.error("Error searching movie", error);
-        return [];
-    }
-}
-
-// Fetches reviews all movies in library and return grouped by movieId
-export const searchReviewsByMovies = async (movieIds: string[]): Promise<Record<string, ReviewDto[]>> => {
-    try {
-        const response = await axios.post<ReviewDto[]>(`${API_BASE_URL}/movie-review/movies`, { movieIds });
-        const reviews = response.data || [];
-
-        return reviews.reduce<Record<string, ReviewDto[]>>((acc, r) => {
-            const key = (r as any).movie?.imdbID;
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(r);
-            return acc;
-        }, {});
-    } catch (error) {
-        console.error('Error fetching reviews for movies', error);
-        return {};
     }
 }
 

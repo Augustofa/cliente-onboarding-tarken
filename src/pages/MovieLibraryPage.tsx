@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Container, Snackbar, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getDefaultLibrary } from "../api/movieLibraryApi";
 import { Header } from "../components/Header/Header";
@@ -9,6 +9,9 @@ function MovieLibraryPage() {
     const [movies, setMovies] = useState<MovieDto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [message, setMessage] = useState('');
+
     useEffect(() => {
         updateLibrary();
     }, []);
@@ -18,12 +21,19 @@ function MovieLibraryPage() {
         const library = await getDefaultLibrary();
         setMovies(library?.movies!);
         setIsLoading(false);
+
     }
 
-    const handleMovieRemoved = (idToRemove: string) => {
-        setMovies(currentMovies => 
-            currentMovies.filter(movie => movie.imdbID !== idToRemove)
-        );
+    const showSnackbarMessage = (message: string) => {
+        setSnackbarOpen(true);
+        setMessage(message);
+    };
+
+    const closeSnackbar = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
     };
     
     return (
@@ -39,9 +49,24 @@ function MovieLibraryPage() {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <LibraryList movies={movies} onMovieRemoved={handleMovieRemoved} onMovieUpdated={updateLibrary} />
+                    <LibraryList movies={movies} showMessage={showSnackbarMessage} onMovieUpdated={updateLibrary} />
                 )}
             </Container>
+            <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000}
+            onClose={closeSnackbar}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+            <Alert
+                onClose={closeSnackbar}
+                severity="info"
+                variant="filled"
+                sx={{ width: '100%' }}
+            >
+                {message}
+            </Alert>
+        </Snackbar>
         </Box>
     );
 }
